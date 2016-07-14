@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 """Creates a fat tree datacenter topology of 16 hosts."""
 from mininet.net import Mininet
@@ -149,4 +150,3 @@ def myNetwork():
 if __name__ == '__main__':
     setLogLevel( 'info' )
     myNetwork()
-
