@@ -114,35 +114,19 @@ def myNetwork():
     net.addLink(s4, s15)
     net.addLink(s4, s19)
 
-    info( '*** Starting network\n')
+    info('*** Starting network\n')
     net.build()
-    info( '*** Starting controllers\n')
+    info('*** Starting controllers\n')
     for controller in net.controllers:
         controller.start()
 
-    info( '*** Starting switches\n')
-    net.get('s13').start([c0])
-    net.get('s5').start([c0])
-    net.get('s17').start([c0])
-    net.get('s9').start([c0])
-    net.get('s12').start([c0])
-    net.get('s6').start([c0])
-    net.get('s10').start([c0])
-    net.get('s16').start([c0])
-    net.get('s18').start([c0])
-    net.get('s15').start([c0])
-    net.get('s7').start([c0])
-    net.get('s2').start([c0])
-    net.get('s8').start([c0])
-    net.get('s3').start([c0])
-    net.get('s1').start([c0])
-    net.get('s14').start([c0])
-    net.get('s19').start([c0])
-    net.get('s11').start([c0])
-    net.get('s4').start([c0])
-    net.get('s20').start([c0])
+    info('*** Starting switches\n')
+    for switch in net.switches:
+        info(switch.name + ' ')
+        switch.start([net.controllers[0]])
+    print
 
-    info( '*** Post configure switches and hosts\n')
+    info('*** Post configure switches and hosts\n')
 
     CLI(net)
     net.stop()
