@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: hedera
+Version: 0.0.0
+Summary: Implementation of Hedera Scheduling System
+Home-page: UNKNOWN
+Author: Ian Walsh, Anh Truong
+Author-email: iwalsh, anhlt92@stanford.edu
+License: GPL
+Description: For Stanford CS244 Spring 2015 lab 3. Build on top of Brandon Heller's RIPL and RIPLPOX libraries
+              
+Keywords: networking protocol Internet OpenFlow data center datacenter
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Internet
