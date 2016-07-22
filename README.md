@@ -76,3 +76,20 @@ Terminal #2 - run our measurement script on a sample traffic pattern
 Alternate Terminal #1 - start the Hedera controller using Global First-Fit flow scheduling
 
 `~/pox/pox.py controllers.hederaController --topo=ft,4`
+
+#### Troubleshooting Errors:
+
+##### POX
+
+*  Process already exists:
+
+```$ sudo netstat -lpn |grep :6633```
+
+```$ sudo kill <process-ID>```
+
+#### Dependencies
+
+```
+sudo apt-get install bwm-ng iperf python-pip matplotlib networkx
+sudo pip install IPy
+```

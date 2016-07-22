@@ -29,6 +29,7 @@ from mininet.util import dumpNodeConnections
 from mininet.cli import CLI
 
 from ripllib.dctopo import FatTreeTopo
+from applauncher import HadoopTest
 
 from argparse import ArgumentParser
 
@@ -218,9 +219,11 @@ def main(args):
 
     # CLI(net)
 
-    print 'Generating the traffic pattern in "%s"...' % args.traffic
-    start_traffic(net)
-
+    #print 'Generating the traffic pattern in "%s"...' % args.traffic
+    #start_traffic(net)
+    print 'Trying to get hadoop working'
+    hosts = net.hosts
+    HadoopTest(hosts)
     # Sample the cumulative # of bytes received for each host, every second.
     # The diff between adjacent samples gives us throughput for that second.
     rxbytes = {}
