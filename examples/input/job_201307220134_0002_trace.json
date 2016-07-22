@@ -1,0 +1,305 @@
+{
+    "config": {
+        "jobTracker": "172.27.102.31", 
+        "maxParallelCopies": "5", 
+        "numMapSlots": "1", 
+        "numReduceSlots": "4", 
+        "user": "marcelo"
+    }, 
+    "finishTime": 1374471535.72, 
+    "name": "job_201307220134_0002", 
+    "numMaps": "4", 
+    "numReduces": "4", 
+    "startTime": 1374471489.034, 
+    "submitTime": "1374471488.996000", 
+    "tasks": [
+        {
+            "finishTime": 1374471503.707, 
+            "host": "172.27.102.31", 
+            "name": "attempt_201307220134_0002_m_000001_0", 
+            "startTime": 1374471497.27, 
+            "type": "MAP"
+        }, 
+        {
+            "finishTime": 1374471524.771, 
+            "host": "172.27.102.31", 
+            "name": "attempt_201307220134_0002_r_000001_0", 
+            "processingTime": "9.068000", 
+            "shuffleFinished": "1374471514.680000", 
+            "sortFinished": "1374471515.703000", 
+            "sortingTime": "1.023000", 
+            "startTime": 1374471506.185, 
+            "type": "REDUCE", 
+            "waitFinished": "1374471511.841995", 
+            "waitingTime": "5.656995"
+        }, 
+        {
+            "finishTime": 1374471524.769, 
+            "host": "172.27.102.32", 
+            "name": "attempt_201307220134_0002_r_000003_0", 
+            "processingTime": "9.066000", 
+            "shuffleFinished": "1374471514.686000", 
+            "sortFinished": "1374471515.703000", 
+            "sortingTime": "1.017000", 
+            "startTime": 1374471506.188, 
+            "type": "REDUCE", 
+            "waitFinished": "1374471511.841465", 
+            "waitingTime": "5.653465"
+        }, 
+        {
+            "finishTime": 1374471503.737, 
+            "host": "172.27.102.32", 
+            "name": "attempt_201307220134_0002_m_000003_0", 
+            "startTime": 1374471497.307, 
+            "type": "MAP"
+        }, 
+        {
+            "finishTime": 1374471503.546, 
+            "host": "172.27.102.33", 
+            "name": "attempt_201307220134_0002_m_000000_0", 
+            "startTime": 1374471497.121, 
+            "type": "MAP"
+        }, 
+        {
+            "finishTime": 1374471527.766, 
+            "host": "172.27.102.33", 
+            "name": "attempt_201307220134_0002_r_000000_0", 
+            "processingTime": "11.083000", 
+            "shuffleFinished": "1374471515.658000", 
+            "sortFinished": "1374471516.683000", 
+            "sortingTime": "1.025000", 
+            "startTime": 1374471506.155, 
+            "type": "REDUCE", 
+            "waitFinished": "1374471511.841421", 
+            "waitingTime": "5.686421"
+        }, 
+        {
+            "finishTime": 1374471533.604, 
+            "host": "172.27.102.33", 
+            "name": "attempt_201307220134_0002_m_000004_0", 
+            "startTime": 1374471530.219, 
+            "type": "MAP"
+        }, 
+        {
+            "finishTime": 1374471494.645, 
+            "host": "172.27.102.33", 
+            "name": "attempt_201307220134_0002_m_000005_0", 
+            "startTime": 1374471491.262, 
+            "type": "MAP"
+        }, 
+        {
+            "finishTime": 1374471524.737, 
+            "host": "172.27.102.34", 
+            "name": "attempt_201307220134_0002_r_000002_0", 
+            "processingTime": "9.071000", 
+            "shuffleFinished": "1374471514.650000", 
+            "sortFinished": "1374471515.666000", 
+            "sortingTime": "1.016000", 
+            "startTime": 1374471506.161, 
+            "type": "REDUCE", 
+            "waitFinished": "1374471511.841481", 
+            "waitingTime": "5.680481"
+        }, 
+        {
+            "finishTime": 1374471503.722, 
+            "host": "172.27.102.34", 
+            "name": "attempt_201307220134_0002_m_000002_0", 
+            "startTime": 1374471497.29, 
+            "type": "MAP"
+        }
+    ], 
+    "transfers": [
+        {
+            "dstAddress": "172.27.102.31", 
+            "dstPort": 53126, 
+            "duration": 0.27400547199999997, 
+            "finishTime": 1374471512.116, 
+            "mapper": "attempt_201307220134_0002_m_000001_0", 
+            "reducer": "attempt_201307220134_0002_r_000001_0", 
+            "size": 67921448, 
+            "srcAddress": "172.27.102.31", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8419945
+        }, 
+        {
+            "dstAddress": "172.27.102.34", 
+            "dstPort": 36849, 
+            "duration": 1.7385189989999998, 
+            "finishTime": 1374471513.58, 
+            "mapper": "attempt_201307220134_0002_m_000001_0", 
+            "reducer": "attempt_201307220134_0002_r_000002_0", 
+            "size": 68251809, 
+            "srcAddress": "172.27.102.31", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.841481
+        }, 
+        {
+            "dstAddress": "172.27.102.32", 
+            "dstPort": 60767, 
+            "duration": 2.1575348250000004, 
+            "finishTime": 1374471513.999, 
+            "mapper": "attempt_201307220134_0002_m_000001_0", 
+            "reducer": "attempt_201307220134_0002_r_000003_0", 
+            "size": 67551170, 
+            "srcAddress": "172.27.102.31", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.841465
+        }, 
+        {
+            "dstAddress": "172.27.102.33", 
+            "dstPort": 52940, 
+            "duration": 2.450578504, 
+            "finishTime": 1374471514.292, 
+            "mapper": "attempt_201307220134_0002_m_000001_0", 
+            "reducer": "attempt_201307220134_0002_r_000000_0", 
+            "size": 67835434, 
+            "srcAddress": "172.27.102.31", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8414214
+        }, 
+        {
+            "dstAddress": "172.27.102.32", 
+            "dstPort": 48838, 
+            "duration": 0.285868508, 
+            "finishTime": 1374471512.129, 
+            "mapper": "attempt_201307220134_0002_m_000003_0", 
+            "reducer": "attempt_201307220134_0002_r_000003_0", 
+            "size": 68090876, 
+            "srcAddress": "172.27.102.32", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8431315
+        }, 
+        {
+            "dstAddress": "172.27.102.31", 
+            "dstPort": 56953, 
+            "duration": 1.820902825, 
+            "finishTime": 1374471513.664, 
+            "mapper": "attempt_201307220134_0002_m_000003_0", 
+            "reducer": "attempt_201307220134_0002_r_000001_0", 
+            "size": 67968241, 
+            "srcAddress": "172.27.102.32", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8430972
+        }, 
+        {
+            "dstAddress": "172.27.102.34", 
+            "dstPort": 35303, 
+            "duration": 1.959036757, 
+            "finishTime": 1374471513.803, 
+            "mapper": "attempt_201307220134_0002_m_000003_0", 
+            "reducer": "attempt_201307220134_0002_r_000002_0", 
+            "size": 67771877, 
+            "srcAddress": "172.27.102.32", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8439631
+        }, 
+        {
+            "dstAddress": "172.27.102.33", 
+            "dstPort": 34663, 
+            "duration": 2.846881754, 
+            "finishTime": 1374471514.691, 
+            "mapper": "attempt_201307220134_0002_m_000003_0", 
+            "reducer": "attempt_201307220134_0002_r_000000_0", 
+            "size": 67726044, 
+            "srcAddress": "172.27.102.32", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.844118
+        }, 
+        {
+            "dstAddress": "172.27.102.33", 
+            "dstPort": 43663, 
+            "duration": 0.282960803, 
+            "finishTime": 1374471512.128, 
+            "mapper": "attempt_201307220134_0002_m_000000_0", 
+            "reducer": "attempt_201307220134_0002_r_000000_0", 
+            "size": 67760082, 
+            "srcAddress": "172.27.102.33", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8450394
+        }, 
+        {
+            "dstAddress": "172.27.102.32", 
+            "dstPort": 37289, 
+            "duration": 1.445123734, 
+            "finishTime": 1374471513.29, 
+            "mapper": "attempt_201307220134_0002_m_000000_0", 
+            "reducer": "attempt_201307220134_0002_r_000003_0", 
+            "size": 68291061, 
+            "srcAddress": "172.27.102.33", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8448763
+        }, 
+        {
+            "dstAddress": "172.27.102.34", 
+            "dstPort": 52300, 
+            "duration": 1.615067497, 
+            "finishTime": 1374471513.46, 
+            "mapper": "attempt_201307220134_0002_m_000000_0", 
+            "reducer": "attempt_201307220134_0002_r_000002_0", 
+            "size": 68085668, 
+            "srcAddress": "172.27.102.33", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8449326
+        }, 
+        {
+            "dstAddress": "172.27.102.31", 
+            "dstPort": 58523, 
+            "duration": 2.755689197, 
+            "finishTime": 1374471514.6, 
+            "mapper": "attempt_201307220134_0002_m_000000_0", 
+            "reducer": "attempt_201307220134_0002_r_000001_0", 
+            "size": 67423978, 
+            "srcAddress": "172.27.102.33", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8443108
+        }, 
+        {
+            "dstAddress": "172.27.102.34", 
+            "dstPort": 49948, 
+            "duration": 0.28218019299999997, 
+            "finishTime": 1374471512.126, 
+            "mapper": "attempt_201307220134_0002_m_000002_0", 
+            "reducer": "attempt_201307220134_0002_r_000002_0", 
+            "size": 68131417, 
+            "srcAddress": "172.27.102.34", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8438199
+        }, 
+        {
+            "dstAddress": "172.27.102.31", 
+            "dstPort": 55048, 
+            "duration": 1.2586787990000001, 
+            "finishTime": 1374471513.103, 
+            "mapper": "attempt_201307220134_0002_m_000002_0", 
+            "reducer": "attempt_201307220134_0002_r_000001_0", 
+            "size": 67912097, 
+            "srcAddress": "172.27.102.34", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8443213
+        }, 
+        {
+            "dstAddress": "172.27.102.32", 
+            "dstPort": 35293, 
+            "duration": 1.605493358, 
+            "finishTime": 1374471513.45, 
+            "mapper": "attempt_201307220134_0002_m_000002_0", 
+            "reducer": "attempt_201307220134_0002_r_000003_0", 
+            "size": 67735347, 
+            "srcAddress": "172.27.102.34", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8445065
+        }, 
+        {
+            "dstAddress": "172.27.102.33", 
+            "dstPort": 57248, 
+            "duration": 2.696640371, 
+            "finishTime": 1374471514.541, 
+            "mapper": "attempt_201307220134_0002_m_000002_0", 
+            "reducer": "attempt_201307220134_0002_r_000000_0", 
+            "size": 67778936, 
+            "srcAddress": "172.27.102.34", 
+            "srcPort": 50060, 
+            "startTime": 1374471511.8443596
+        }
+    ]
+}

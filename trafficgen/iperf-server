@@ -1,0 +1,40 @@
+#!/bin/bash
+#exit 0
+
+if [ $# -ne 2 ]
+then
+	echo "Usage: $0 host $port"
+	exit 1
+fi
+
+host=$1
+port=$2
+
+# UDP
+#cmd="iperf -u -s -p $port -P 1 --reportstyle C"
+
+# TCP
+cmd="iperf -s -p $port -P 1 --reportstyle C"
+
+sufflix=`echo $host $cmd | tr ' ' '-'`
+stdout="/tmp/iperf/temp-stdout-"`date +%s`"-"$sufflix".txt"
+stderr="/tmp/iperf/temp-stderr-"`date +%s`"-"$sufflix".txt"
+other="/tmp/iperf/iperf-"`date +%s`"-"$sufflix".txt"
+touch $stderr $stdout $other
+
+echo `date`" - start" > $other
+#echo iperf $*
+#cmd="tcp-server $host $port"
+eval $cmd 2> $stderr > $stdout
+echo `date`" - after first run" >> $other
+
+error=`wc -l $stderr | cut -d' ' -f1`
+output=`wc -l $stdout | cut -d' ' -f1`
+#cat $stdout >> $other
+cat $stderr >> $other
+echo `date`" - error=$error, output=$output" >> $other
+echo "OUTPUT="`cat $stdout` >> $other
+echo `date`" - end" >> $other
+rm -f $stdout $stderr
+exit 0
+

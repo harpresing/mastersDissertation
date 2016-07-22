@@ -1,0 +1,6 @@
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
+JOBTRACKER_PORT = 6666
+TASKTRACKER_PORT = 6667
+REDUCELISTENER_PORT = 6668
+SHUFFLESERVER_PORT = 6669
