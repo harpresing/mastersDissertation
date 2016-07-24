@@ -2,9 +2,9 @@
 
 Topology - Flat tree
 
-Based on [riplPOX](https://github.com/brandonheller/riplpox) and hedera implementation as described [here](https://www.eventbrite.ie/e/gsu-postgrad-party-at-the-pav-tickets-26514903791?aff=efbnreg)
+Based on [riplPOX](https://github.com/brandonheller/riplpox) and hedera implementation as described [here](https://reproducingnetworkresearch.wordpress.com/2015/05/31/cs244-15-hedera-flow-scheduling-draft/)
 This is an implementation of the Hedera controller supporting Global First Fit from http://bnrg.cs.berkeley.edu/~randy/Courses/CS294.S13/7.3.pdf. 
-
+This Hedera Controller is used to route realistic map reduce traffic using a Hadoop Emulator based on this [repository](https://github.com/mvneves/mremu).
 It is built on top of Brandon Heller's Ripl library and POX controller with minor changes to both to support version consistency and Hedera functionality.
 
 Use a CS 244 Mininet VM to run the code (either from the class website or an Amazon EC2 instance).
