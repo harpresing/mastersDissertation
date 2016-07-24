@@ -233,8 +233,8 @@ class MapOutputCopier(Thread):
         self.copierControl.start_copy()
 
         partition.startTime = time.time()
-        print "MapOutputCopier: copiando partitcao - %s" % str(partition)
-        print "VEIGA: vou dormir por ",partition.initTime," antes de comecar a enviar"
+        print "MapOutputCopier: copying partition - %s" % str(partition)
+        print "Sleeping for", partition.initTime, " before starting to send"
         mode = get_operation_mode()
         if mode == HADOOP_MODE:
             time.sleep(partition.initTime)

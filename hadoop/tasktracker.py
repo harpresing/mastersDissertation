@@ -246,7 +246,7 @@ class ReduceListener(Thread):
             print 'ReduceListener: received from ' + str(addr) + " - " + str(obj)
 #            if DEBUG is True:
 #                print obj
-            # TODO: a chave de ver o nome da tarefa reducer
+            # TODO: the key to see the name of the reducer task
             self.control.cond.acquire()
             self.partitionQueue[obj.reducer].append(obj)
             self.control.cond.release()
@@ -254,7 +254,7 @@ class ReduceListener(Thread):
             c.send(data)
             c.close()
             partition_received += 1
-            print "RECEBI %d PARTICIOES DE %d NO TOTAL" % (partition_received ,l)
+            print "Received %d partition from %d TOTAL partitions" % (partition_received, l)
 
 class ShuffleServer(Thread):
     def __init__(self, host, numTransfers):
@@ -283,8 +283,9 @@ class ShuffleServer(Thread):
             c, addr = s.accept()
             print "ShuffleServer got connection from " + str(addr)
             data = c.recv(1024)
+            # Python pickle = Used for serializing & De-serializing data
             partition = pickle.loads(data)
-            #print "ShuffleServer: received from " + str(addr) + ": " + str(partition)
+            # print "ShuffleServer: received from " + str(addr) + ": " + str(partition)
             iperf = MapOutputServlet(partition)
             iperf.start()
             threads.append(iperf)

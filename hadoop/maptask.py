@@ -44,7 +44,7 @@ class MapTask(Thread):
         print "MapTask: finished (%s)" % self.task.name
 
     def writeOutputData(self):
-        print "salve mapoutput"
+        print "Save Map output"
     
     def sendPartition(self, partition):
         try:
