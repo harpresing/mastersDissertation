@@ -18,10 +18,12 @@
 
 import os
 import json
+import subprocess
 
 from time import time, sleep
 from math import sqrt
 
+import re
 from mininet.node import RemoteController
 from mininet.net import Mininet
 from mininet.log import lg
@@ -94,7 +96,7 @@ def start_traffic(net):
                                                  port, IPERF_SECONDS)
             dst.cmd(server)
             src.cmd(client)
-            print 'Started iperf flow %s (%s) -> %s (%s) on port %d' %\
+            print 'Started iperf flow %s (%s) -> %s (%s) on port %d' % \
                   (src_name, src.IP('%s-eth0' % src_name), dst_name,
                    dst.IP('%s-eth0' % dst_name), port)
             port_count += 1
@@ -201,6 +203,23 @@ def save_results(mean_gbps, stddev_gbps):
     print 'Results saved to %s!' % outfile
 
 
+def killController():
+
+    ports = ['6633']
+    popen = subprocess.Popen(['netstat', '-lpn'],
+                             shell=False,
+                             stdout=subprocess.PIPE)
+    (data, err) = popen.communicate()
+    pattern = "^tcp.*((?:{0})).* (?P<pid>[0-9]*)/.*$"
+    pattern = pattern.format(')|(?:'.join(ports))
+    prog = re.compile(pattern)
+    for line in data.split('\n'):
+        match = re.match(prog, line)
+        if match:
+            pid = match.group('pid')
+            subprocess.Popen(['kill', '-9', pid])
+
+
 def main(args):
     print 'Running Hedera testbed experiments'
 
@@ -219,8 +238,8 @@ def main(args):
 
     # CLI(net)
 
-    #print 'Generating the traffic pattern in "%s"...' % args.traffic
-    #start_traffic(net)
+    # print 'Generating the traffic pattern in "%s"...' % args.traffic
+    # start_traffic(net)
     print 'Trying to get hadoop working'
     hosts = net.hosts
     HadoopTest(hosts)
@@ -245,9 +264,9 @@ def main(args):
     agg_stddev = sqrt(agg_var)
     mean_gbps = agg_mean / (2 ** 30) * 8
     stddev_gbps = agg_stddev / (2 ** 30) * 8
-    print 'Total average throughput: %f bytes/sec (%f Gbps)' %\
+    print 'Total average throughput: %f bytes/sec (%f Gbps)' % \
           (agg_mean, mean_gbps)
-    print 'Standard deviation: %f bytes/sec (%f Gbps)' %\
+    print 'Standard deviation: %f bytes/sec (%f Gbps)' % \
           (agg_stddev, stddev_gbps)
 
     save_results(mean_gbps, stddev_gbps)
@@ -256,6 +275,10 @@ def main(args):
 
     # Shut down iperf processes
     os.system('killall -9 ' + IPERF_PATH)
+
+    # Kill the controller before to prevent exceptions
+
+    killController()
 
     net.stop()
 
@@ -270,5 +293,6 @@ if __name__ == '__main__':
         print 'Caught exception.  Cleaning up...'
         print '-' * 80
         import traceback
+
         traceback.print_exc()
         os.system('killall -9 top bwm-ng tcpdump cat mnexec iperf; mn -c')
