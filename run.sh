@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# cleanup previous executions
+./cleanup.sh
+mkdir /tmp/iperf
 for file in traffic/*
 do
 	killall -9 python2.7

@@ -239,6 +239,8 @@ def main(args):
         sample_rxbytes(net, rxbytes)
         sleep(1.0)
 
+    print 'Captured Rxbytes from /proc/net/dev = %s' % rxbytes
+
     (agg_mean, agg_var) = aggregate_statistics(rxbytes, sample_durations)
     agg_stddev = sqrt(agg_var)
     mean_gbps = agg_mean / (2 ** 30) * 8
