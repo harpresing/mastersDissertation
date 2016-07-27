@@ -34,9 +34,10 @@ from ripllib.dctopo import FatTreeTopo
 from applauncher import HadoopTest
 
 from argparse import ArgumentParser
+from multiprocessing import Process, Pipe
 
 # Number of seconds to sample the flows
-N_SAMPLES = 10
+N_SAMPLES = 30
 
 # We must skip at least the first sample to establish a baseline bytes_recvd
 SAMPLES_TO_SKIP = 1
@@ -203,8 +204,7 @@ def save_results(mean_gbps, stddev_gbps):
     print 'Results saved to %s!' % outfile
 
 
-def killController():
-
+def kill_controller():
     ports = ['6633']
     popen = subprocess.Popen(['netstat', '-lpn'],
                              shell=False,
@@ -218,6 +218,38 @@ def killController():
         if match:
             pid = match.group('pid')
             subprocess.Popen(['kill', '-9', pid])
+
+
+def sample_bandwidth(net):
+    # Sample the cumulative # of bytes received for each host, every second.
+    # The diff between adjacent samples gives us throughput for that second.
+    print "Inside sample_bandwidth"
+    rxbytes = {}
+    sample_durations = []
+    for name in HOST_NAMES:
+        rxbytes[name] = []
+
+    now = time()
+    for i in xrange(N_SAMPLES):
+        print 'Taking sample %d...' % (i,)
+        sample_durations.append(time() - now)
+        now = time()
+        sample_rxbytes(net, rxbytes)
+        sleep(1.0)
+        i += 1
+
+    print 'Captured Rxbytes from /proc/net/dev = %s' % rxbytes
+
+    (agg_mean, agg_var) = aggregate_statistics(rxbytes, sample_durations)
+    agg_stddev = sqrt(agg_var)
+    mean_gbps = agg_mean / (2 ** 30) * 8
+    stddev_gbps = agg_stddev / (2 ** 30) * 8
+    print 'Total average throughput: %f bytes/sec (%f Gbps)' % \
+          (agg_mean, mean_gbps)
+    print 'Standard deviation: %f bytes/sec (%f Gbps)' % \
+          (agg_stddev, stddev_gbps)
+
+    save_results(mean_gbps, stddev_gbps)
 
 
 def main(args):
@@ -242,43 +274,26 @@ def main(args):
     # start_traffic(net)
     print 'Trying to get hadoop working'
     hosts = net.hosts
-    HadoopTest(hosts)
-    # Sample the cumulative # of bytes received for each host, every second.
-    # The diff between adjacent samples gives us throughput for that second.
-    rxbytes = {}
-    sample_durations = []
-    for name in HOST_NAMES:
-        rxbytes[name] = []
-
-    now = time()
-    for i in xrange(N_SAMPLES):
-        print 'Taking sample %d of %d...' % (i, N_SAMPLES)
-        sample_durations.append(time() - now)
-        now = time()
-        sample_rxbytes(net, rxbytes)
-        sleep(1.0)
-
-    print 'Captured Rxbytes from /proc/net/dev = %s' % rxbytes
-
-    (agg_mean, agg_var) = aggregate_statistics(rxbytes, sample_durations)
-    agg_stddev = sqrt(agg_var)
-    mean_gbps = agg_mean / (2 ** 30) * 8
-    stddev_gbps = agg_stddev / (2 ** 30) * 8
-    print 'Total average throughput: %f bytes/sec (%f Gbps)' % \
-          (agg_mean, mean_gbps)
-    print 'Standard deviation: %f bytes/sec (%f Gbps)' % \
-          (agg_stddev, stddev_gbps)
-
-    save_results(mean_gbps, stddev_gbps)
-
+    emulation = Process(target=HadoopTest, args=(hosts, ))
+    emulation.start()
+    sample = Process(target=sample_bandwidth, args=(net, ))
+    sample.start()
+    #print emulation.is_alive()
+    emulation.join()
+    # N_SAMPLES = emulation.is_alive()
+    # print '***** N_SAMPLES is %s' % N_SAMPLES,
+    # print 'Exitcode %s' % emulation.exitcode,
+    sample.join()
+    # HadoopTest(hosts)
+    # SampleHostBandwidth
     # CLI(net)
 
     # Shut down iperf processes
-    os.system('killall -9 ' + IPERF_PATH)
+    # os.system('killall -9 ' + IPERF_PATH)
 
     # Kill the controller before to prevent exceptions
 
-    killController()
+    kill_controller()
 
     net.stop()
 
