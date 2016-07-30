@@ -34,10 +34,13 @@ from ripllib.dctopo import FatTreeTopo
 from applauncher import HadoopTest
 
 from argparse import ArgumentParser
-from multiprocessing import Process, Pipe
+from multiprocessing import Process, Value
 
 # Number of seconds to sample the flows
 N_SAMPLES = 30
+
+# Flag to indicate if the emulation is working or not
+IS_ALIVE = Value('i', 0)
 
 # We must skip at least the first sample to establish a baseline bytes_recvd
 SAMPLES_TO_SKIP = 1
@@ -230,8 +233,10 @@ def sample_bandwidth(net):
         rxbytes[name] = []
 
     now = time()
-    for i in xrange(N_SAMPLES):
+    i = 0
+    while IS_ALIVE.value == 1:
         print 'Taking sample %d...' % (i,)
+        print 'Value of IS_ALIVE %d' % IS_ALIVE.value
         sample_durations.append(time() - now)
         now = time()
         sample_rxbytes(net, rxbytes)
@@ -276,17 +281,16 @@ def main(args):
     hosts = net.hosts
     emulation = Process(target=HadoopTest, args=(hosts, ))
     emulation.start()
-    sample = Process(target=sample_bandwidth, args=(net, ))
+
+    IS_ALIVE.value = 1
+
+    sample = Process(target=sample_bandwidth, args=(net,))
     sample.start()
-    #print emulation.is_alive()
+
     emulation.join()
-    # N_SAMPLES = emulation.is_alive()
-    # print '***** N_SAMPLES is %s' % N_SAMPLES,
-    # print 'Exitcode %s' % emulation.exitcode,
+    IS_ALIVE.value = 0
+    print '********** Changed the value of IS_ALIVE'
     sample.join()
-    # HadoopTest(hosts)
-    # SampleHostBandwidth
-    # CLI(net)
 
     # Shut down iperf processes
     # os.system('killall -9 ' + IPERF_PATH)
