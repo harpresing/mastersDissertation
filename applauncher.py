@@ -7,7 +7,7 @@ import os
 import sys
 
 
-def HadoopTest(hosts):
+def HadoopTest(hosts, traffic):
     basedir = "./hadoop"
     confdir = basedir + "/conf"
     done = "./output/done.json"
@@ -46,8 +46,8 @@ def HadoopTest(hosts):
     print "Running Hadoop simulation ..."
     for h in hosts:
         print 'Starting task manager at node %s \n' % h.IP()
-        h.popen('%s %s > ./output/output-%s.txt 2> ./output/error-%s.txt' % (emulator, h.IP(), h.IP(), h.IP()),
-                shell=True)
+        h.popen('%s %s %s > ./output/output-%s.txt 2> ./output/error-%s.txt'
+                % (emulator, h.IP(), traffic, h.IP(), h.IP()), shell=True)
     while True:
         if os.path.isfile(done):
             break

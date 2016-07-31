@@ -109,6 +109,8 @@ if __name__ == "__main__":
         exit()
 
     host = sys.argv[1]
+    # Load trace file
+    traffic = sys.argv[2]
     # load emulation config file
     json_file = open("config.json")
     conf = json.load(json_file)
@@ -118,8 +120,9 @@ if __name__ == "__main__":
     set_operation_mode(mode)
 
     # load trace file
-    trace = Trace(conf["trace"], conf["mapping"], host)
+    trace = Trace(traffic, conf["mapping"], host)
 
     # start Hadoop emulation
+    print '**************** Inside emulator traffic = %s, conf["trace"] = %s' % (traffic, conf["trace"])
     hadoop = Hadoop(trace, conf, host)
     hadoop.run()

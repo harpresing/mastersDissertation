@@ -279,7 +279,7 @@ def main(args):
     # start_traffic(net)
     print 'Trying to get hadoop working'
     hosts = net.hosts
-    emulation = Process(target=HadoopTest, args=(hosts, ))
+    emulation = Process(target=HadoopTest, args=(hosts, args.traffic, ))
     emulation.start()
 
     IS_ALIVE.value = 1
