@@ -93,3 +93,13 @@ Alternate Terminal #1 - start the Hedera controller using Global First-Fit flow 
 sudo apt-get install bwm-ng iperf python-pip matplotlib networkx
 sudo pip install IPy
 ```
+
+#### Trace types
+
++ 8 Nodes = job_201312012205_0002_trace (2nd file), job_201312012250_0002_trace.json (3rd file), job_201312012307_0002_trace.json (4th file)
+
+##### Traces with errors
+
++ job_201312301610_0002_trace.json (5th file), Mode: GFF + ECMP, Error `TypeError: 'NoneType' object is not iterable 
+ERROR:core:Exception while handling OpenFlowNexus!PacketIn...`
++ job_201312301708_0002_trace (6th file) =  No output on nodes in GFF mode 

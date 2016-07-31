@@ -1,5 +1,5 @@
 {
-	"trace": "examples/input/job_201312301708_0016_trace.json",
+	"trace": "examples/input/job_201312301708_0010_trace.json",
 	"mapping": "examples/input/hostname_mapping-16nodes-fattree.json",
 	"output": "examples/job_201312301708_0016_result.json",
 	"remoteController": true,

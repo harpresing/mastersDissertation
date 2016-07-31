@@ -236,7 +236,6 @@ def sample_bandwidth(net):
     i = 0
     while IS_ALIVE.value == 1:
         print 'Taking sample %d...' % (i,)
-        print 'Value of IS_ALIVE %d' % IS_ALIVE.value
         sample_durations.append(time() - now)
         now = time()
         sample_rxbytes(net, rxbytes)
