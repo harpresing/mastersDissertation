@@ -103,3 +103,6 @@ sudo pip install IPy
 + job_201312301610_0002_trace.json (5th file), Mode: GFF + ECMP, Error `TypeError: 'NoneType' object is not iterable 
 ERROR:core:Exception while handling OpenFlowNexus!PacketIn...`
 + job_201312301708_0002_trace (6th file) =  No output on nodes in GFF mode 
++ job_201312301749_0010_trace (9th file) = no node `10.0.0.3` GFF mode - `  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 110] Connection timed out` 
