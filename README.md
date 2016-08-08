@@ -94,6 +94,10 @@ sudo apt-get install bwm-ng iperf python-pip matplotlib networkx
 sudo pip install IPy
 ```
 
+### Make scripts executable
+
++ `$ chmod +x myscript.py`
+
 #### Trace types
 
 + 8 Nodes = job_201312012205_0002_trace (2nd file), job_201312012250_0002_trace.json (3rd file), job_201312012307_0002_trace.json (4th file)
