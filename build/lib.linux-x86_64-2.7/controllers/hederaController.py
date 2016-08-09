@@ -7,6 +7,8 @@ find a link which will accommodate that demand and reserve
 """
 
 
+import shelve
+import anydbm
 import json
 import logging
 import random
@@ -28,8 +30,10 @@ from util import buildTopo, getRouting
 
 log = core.getLogger()
 log.setLevel(logging.WARNING)
+
 # Number of bytes to send for packet_ins
 MISS_SEND_LEN = 2000
+
 
 IDLE_TIMEOUT = 10
 CAPACITY = 1
@@ -117,6 +121,7 @@ class HederaController(object):
         self.flows = {}
         self.link_usage = {}
         self.all_flows = {}
+        #self.all_flows = shelve.open('reactiveFlows.db')
         self.count = 0
 
         # TODO: generalize all_switches_up to a more general state machine.
@@ -220,7 +225,7 @@ class HederaController(object):
                     out_port = final_out_port
                 self.switches[node_dpid].install(out_port, match, idle_timeout=
                 IDLE_TIMEOUT)
-                self.all_flows[self.count] = {"dpid": node_dpid, "method": "install", "out_port": out_port,
+                self.all_flows[str(self.count)] = {"dpid": node_dpid, "method": "install", "out_port": out_port,
                                               "idle_timeout": IDLE_TIMEOUT, "match": {"dl_src": str(match.dl_src),
                                                                                       "dl_dst": str(match.dl_dst),
                                                                                       "dl_vlan": match.dl_vlan,
@@ -233,13 +238,13 @@ class HederaController(object):
                                                                                       "tp_src": match.tp_src,
                                                                                       "tp_dst": match.tp_dst}}
                 self.count += 1
-                self._save_results()
-
-    def _save_results(self):
-        flowFile = 'reactiveFlows.json'
-
-        with open(flowFile, 'w') as f:
-            json.dump(self.all_flows, f, indent=4)
+    #             self._save_results()
+    #
+    # def _save_results(self):
+    #     flowFile = 'reactiveFlows.json'
+    #
+    #     with open(flowFile, 'w') as f:
+    #         json.dump(self.all_flows, f, indent=4)
 
 
     def _eth_to_int(self, eth):
