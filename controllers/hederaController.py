@@ -6,9 +6,6 @@ do a demand estimation
 find a link which will accommodate that demand and reserve
 """
 
-
-import shelve
-import anydbm
 import json
 import logging
 import random
@@ -223,20 +220,18 @@ class HederaController(object):
                     out_port, next_in_port = self.t.port(node, next_node)
                 else:
                     out_port = final_out_port
-                self.switches[node_dpid].install(out_port, match, idle_timeout=
-                IDLE_TIMEOUT)
-                self.all_flows[str(self.count)] = {"dpid": node_dpid, "method": "install", "out_port": out_port,
-                                              "idle_timeout": IDLE_TIMEOUT, "match": {"dl_src": str(match.dl_src),
-                                                                                      "dl_dst": str(match.dl_dst),
-                                                                                      "dl_vlan": match.dl_vlan,
-                                                                                      "dl_vlan_pcp": match.dl_vlan_pcp,
-                                                                                      "dl_type": match.dl_type,
-                                                                                      "nw_tos": match.nw_tos,
-                                                                                      "nw_proto": match.nw_proto,
-                                                                                      "nw_src": str(match.nw_src),
-                                                                                      "nw_dst": str(match.nw_dst),
-                                                                                      "tp_src": match.tp_src,
-                                                                                      "tp_dst": match.tp_dst}}
+                self.switches[node_dpid].install(out_port, match, idle_timeout=IDLE_TIMEOUT)
+                self.all_flows[self.count] = {"dpid": node_dpid, "out_port": out_port,
+                                              "dl_src": str(match.dl_src),
+                                              "dl_dst": str(match.dl_dst),
+                                              "dl_vlan": match.dl_vlan,
+                                              "dl_type": match.dl_type,
+                                              "nw_src": str(match.nw_src),
+                                              "nw_dst": str(match.nw_dst),
+                                              "tp_src": match.tp_src,
+                                              "tp_dst": match.tp_dst}
+                with open('reactiveFlows.json', "a") as j:
+                    j.write("{},\n".format(json.dumps(self.all_flows[self.count])))
                 self.count += 1
     #             self._save_results()
     #
