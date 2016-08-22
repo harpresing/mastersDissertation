@@ -193,8 +193,42 @@ class HederaController(object):
                 num_dst_incoming_flows += 1
         return 1 / num_dst_incoming_flows
 
-    def _install_reactive_path(self):
+    def _install_reactive_path(self, event, out_dpid, final_out_port, packet):
+        "Install entries on route between two switches."
+
+        if isinstance(packet.next, ipv4):
+            ip = packet.next
+
+            in_name = self.t.id_gen(dpid=event.dpid).name_str()
+            out_name = self.t.id_gen(dpid=out_dpid).name_str()
+
+            flow_key = self._flow_key(ip.srcip, ip.dstip)
+            path_key = self._path_key(in_name, out_name)
+
+            route = None
+            if path_key in self.paths:
+                self.flows[flow_key] = -1
+                flow_demand = self._get_flow_demand(ip.dstip)
+                route = self._global_first_fit(flow_key, path_key, flow_demand, packet)
+            else:
+                hash_ = self._ecmp_hash(packet)
+                route = self.r.get_route(in_name, out_name, hash_, False)
+
+            log.info("route: %s" % route)
+            match = of.ofp_match.from_packet(packet)
+            #  log.info("*************** Printing match %s" % match)
+            for i, node in enumerate(route):
+                node_dpid = self.t.id_gen(name=node).dpid
+                if i < len(route) - 1:
+                    next_node = route[i + 1]
+                    out_port, next_in_port = self.t.port(node, next_node)
+                else:
+                    out_port = final_out_port
+                self.switches[node_dpid].install(out_port, match, idle_timeout=IDLE_TIMEOUT)
+
+    def _install_proactive_path(self):
         "Install entries on route between two switches proactively."
+        count = 0
         with open('reactiveFlows.json') as data_file:
             data = json.load(data_file)
         for i in xrange(len(data)):
@@ -210,8 +244,11 @@ class HederaController(object):
             match.nw_dst = IPAddr(data[i]['nw_dst'])
             match.tp_src = data[i]['tp_src']
             match.tp_dst = data[i]['tp_dst']
+            count += 1
             self.switches[data[i]['dpid']].install(data[i]['out_port'],
                                                    match, idle_timeout=10)
+        log.info("**************** %s Proactive paths installed!!" % count)
+
     def _eth_to_int(self, eth):
         return sum(([ord(x) * 2 ** ((5 - i) * 8) for i, x in enumerate(eth.raw)]))
 
@@ -265,7 +302,7 @@ class HederaController(object):
         # Insert flow, deliver packet directly to destination.
         if packet.dst in self.macTable:
             out_dpid, out_port = self.macTable[packet.dst]
-            # self._install_reactive_path(event, out_dpid, out_port, packet)
+            self._install_reactive_path(event, out_dpid, out_port, packet)
 
             # log.info("sending to entry in mactable: %s %s" % (out_dpid, out_port))
             self.switches[out_dpid].send_packet_data(out_port, event.data)
@@ -284,8 +321,7 @@ class HederaController(object):
             log.info("Saw PacketIn before all switches were up - ignoring.")
             return
         else:
-            self._install_reactive_path()
-            #  self._handle_packet_reactive(event)
+            self._handle_packet_reactive(event)
 
     def _get_links_from_path(self, path):
         path_len = len(path)
@@ -338,6 +374,8 @@ class HederaController(object):
         if len(self.switches) == len(self.t.switches()):
             log.info("Woo!  All switches up")
             self.all_switches_up = True
+            log.info("****************Installing proactive paths")
+            self._install_proactive_path()
             self._get_all_paths()
 
 
