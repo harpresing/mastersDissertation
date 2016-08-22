@@ -42,3 +42,4 @@ rm ./hadoop/tmp/* -f
 rm -rf /tmp/iperf
 mkdir -p /tmp/iperf
 rm -rf ./output/*
+

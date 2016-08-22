@@ -6,6 +6,9 @@ do a demand estimation
 find a link which will accommodate that demand and reserve
 """
 
+
+import shelve
+import anydbm
 import json
 import logging
 import random
@@ -17,6 +20,7 @@ from pox.lib.util import dpidToStr
 import pox.openflow.libopenflow_01 as of
 from pox.lib.revent import EventMixin
 from pox.lib.addresses import EthAddr
+from pox.lib.addresses import IPAddr
 from pox.lib.packet.ipv4 import ipv4
 from pox.lib.packet.udp import udp
 from pox.lib.packet.tcp import tcp
@@ -26,7 +30,7 @@ from ripllib.mn import topos
 from util import buildTopo, getRouting
 
 log = core.getLogger()
-log.setLevel(logging.WARNING)
+log.setLevel(logging.INFO)
 
 # Number of bytes to send for packet_ins
 MISS_SEND_LEN = 2000
@@ -221,26 +225,29 @@ class HederaController(object):
                 else:
                     out_port = final_out_port
                 self.switches[node_dpid].install(out_port, match, idle_timeout=IDLE_TIMEOUT)
-                self.all_flows[self.count] = {"dpid": node_dpid, "out_port": out_port,
-                                              "dl_src": str(match.dl_src),
-                                              "dl_dst": str(match.dl_dst),
-                                              "dl_vlan": match.dl_vlan,
-                                              "dl_type": match.dl_type,
-                                              "nw_src": str(match.nw_src),
-                                              "nw_dst": str(match.nw_dst),
-                                              "tp_src": match.tp_src,
-                                              "tp_dst": match.tp_dst}
-                with open('reactiveFlows.json', "a") as j:
-                    j.write("{},\n".format(json.dumps(self.all_flows[self.count])))
-                self.count += 1
-    #             self._save_results()
-    #
-    # def _save_results(self):
-    #     flowFile = 'reactiveFlows.json'
-    #
-    #     with open(flowFile, 'w') as f:
-    #         json.dump(self.all_flows, f, indent=4)
 
+    def _install_proactive_path(self):
+        "Install entries on route between two switches proactively."
+        count = 0
+        with open('reactiveFlows.json') as data_file:
+            data = json.load(data_file)
+        for i in xrange(len(data)):
+            match = of.ofp_match()
+            match.dl_src = EthAddr(data[i]['dl_src'])
+            match.dl_dst = EthAddr(data[i]['dl_dst'])
+            match.dl_vlan = data[i]['dl_vlan']
+            match.dl_vlan_pcp = 0
+            match.dl_type = data[i]['dl_type']
+            match.nw_tos = 0
+            match.nw_proto = 6
+            match.nw_src = IPAddr(data[i]['nw_src'])
+            match.nw_dst = IPAddr(data[i]['nw_dst'])
+            match.tp_src = data[i]['tp_src']
+            match.tp_dst = data[i]['tp_dst']
+            count += 1
+            self.switches[data[i]['dpid']].install(data[i]['out_port'],
+                                                   match, idle_timeout=10)
+        log.info("**************** %s Proactive paths installed!!" % count)
 
     def _eth_to_int(self, eth):
         return sum(([ord(x) * 2 ** ((5 - i) * 8) for i, x in enumerate(eth.raw)]))
@@ -367,6 +374,8 @@ class HederaController(object):
         if len(self.switches) == len(self.t.switches()):
             log.info("Woo!  All switches up")
             self.all_switches_up = True
+            log.info("****************Installing proactive paths")
+            self._install_proactive_path()
             self._get_all_paths()
 
 

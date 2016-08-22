@@ -94,6 +94,22 @@ sudo apt-get install bwm-ng iperf python-pip matplotlib networkx
 sudo pip install IPy
 ```
 
+### Make scripts executable
+
++ `$ chmod +x myscript.py`
+
+#### Traces that were used for the experiment from mremu [repo](https://github.com/mvneves/mremu)
+
+Changing the names of the traces for readibility
+
+|Trace  |New Name|       |       
+|---    |---     |---    |      
+|job_201312301708_0016_trace|job1        |       
+|job_201307220134_0002_trace|job2        |       
+|job_201312301708_0002_trace|job3        |             
+|job_201312301708_0010_trace|job4        |
+
+
 #### Trace types
 
 + 8 Nodes = job_201312012205_0002_trace (2nd file), job_201312012250_0002_trace.json (3rd file), job_201312012307_0002_trace.json (4th file)
