@@ -1,13 +1,15 @@
-# Masters Dissertation
+# Proactive Configuration of Data centre Networks for Big Data Processing
 
 Topology - Flat tree
 
-Based on [riplPOX](https://github.com/brandonheller/riplpox) and hedera implementation as described [here](https://reproducingnetworkresearch.wordpress.com/2015/05/31/cs244-15-hedera-flow-scheduling-draft/)
-This is an implementation of the Hedera controller supporting Global First Fit from http://bnrg.cs.berkeley.edu/~randy/Courses/CS294.S13/7.3.pdf. 
-This Hedera Controller is used to route realistic map reduce traffic using a Hadoop Emulator based on this [repository](https://github.com/mvneves/mremu).
-It is built on top of Brandon Heller's Ripl library and POX controller with minor changes to both to support version consistency and Hedera functionality.
+The SDN controller routes Hadoop traffic in three ways
++ ECMP - Based on [riplPOX](https://github.com/brandonheller/riplpox) 
++ Global First Fit - Based on flow scheduling algorim described [here](http://bnrg.cs.berkeley.edu/~randy/Courses/CS294.S13/7.3.pdf) 
++ Proactive controller as described in the dissertation
 
-Use a CS 244 Mininet VM to run the code (either from the class website or an Amazon EC2 instance).
+### Running the experiment
+
+Use a CS 244 Mininet [VM](http://web.stanford.edu/class/cs244/vbsetup.htm) to run the code.
 
 1. Switch to the CS 244 version of Mininet
 
@@ -36,56 +38,26 @@ Use a CS 244 Mininet VM to run the code (either from the class website or an Ama
 
     `$ git pull origin dart`
 
-5. Clone our project repo
-
-    `$ cd ~`
-
-    `$ git clone https://github.com/iwalsh/244proj.git`
-
-    `cd 244proj/`
+5. Install the controllers by chanding directory into this folder and run
 
     `$ sudo python setup.py install`
+    
+    `$ sudo ./run_ecmp.sh`
 
-6. Run it!
+6. After ecmp is finished, run gff 
+    
+    `$ sudo ./cleanup.sh`
+    
+    `$ sudo ./run_gff.sh`
 
-    `$ cd ~/244proj`
+7. The flow rules are stored it `reactiveFlows.json`. After gff finishes executing, edit the `reactiveFlows.json` file by adding `[` in the beginning of the first line and remove `,` in the end of the last line, subsequenty add `]` instead, so that the file becomes valid JSON
 
-    `$ sudo ./run.sh`
+8. Finally, run the proactive scheduler
+    
+    `$ sudo ./cleanup.sh`
+    
+    `$ sudo ./run_proactive.sh`
 
-7. Plot the results
-
-    `$ cd ~/244proj`
-
-    `$ python plot_results myAwesomePlot.png`
-
-BONUS:
-
-If you don't want to run the full measurement suite, you can run one measurement
-at a time, like so:
-
-`$ cd ~/244proj`
-
-Terminal #1 - start the remote controller using ECMP flow scheduling
-
-`$ ~/pox/pox.py controllers.riplpox --topo=ft,4 --routing=hashed --mode=reactive`
-
-Terminal #2 - run our measurement script on a sample traffic pattern
-
-`$ sudo python LaunchExperiment.py ecmp traffic/stride2.json`
-
-Alternate Terminal #1 - start the Hedera controller using Global First-Fit flow scheduling
-
-`~/pox/pox.py controllers.hederaController --topo=ft,4`
-
-#### Troubleshooting Errors:
-
-##### POX
-
-*  Process already exists:
-
-```$ sudo netstat -lpn |grep :6633```
-
-```$ sudo kill <process-ID>```
 
 #### Dependencies
 
@@ -96,7 +68,12 @@ sudo pip install IPy
 
 ### Make scripts executable
 
-+ `$ chmod +x myscript.py`
++ `$ chmod +x myscript.sh`
+
+
+### Quirks while running the experiment
+
+We ran the experiment on an 8 core i7 processor with 16 GB or RAM. Still the Hadoop emulation would not finish on time and would keep running indefinately, due to IO bottlenecks. If this happens, restart your system.
 
 #### Traces that were used for the experiment from mremu [repo](https://github.com/mvneves/mremu)
 
@@ -108,4 +85,7 @@ Changing the names of the traces for readibility
 |job_201307220134_0002_trace|job2_trace        |       
 |job_201312301708_0002_trace|job3_trace        |             
 |job_201312301708_0010_trace|job4_trace        |
+
+### Extras
+`gff_flow_rules` folder contains the flows obtained from gff routing, that were used by the proactive scheduler to install proactive flows, the readings from which, we evaluated its performance. 
 
