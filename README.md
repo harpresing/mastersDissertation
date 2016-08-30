@@ -104,21 +104,8 @@ Changing the names of the traces for readibility
 
 |Trace  |New Name|       |       
 |---    |---     |---    |      
-|job_201312301708_0016_trace|job1        |       
-|job_201307220134_0002_trace|job2        |       
-|job_201312301708_0002_trace|job3        |             
-|job_201312301708_0010_trace|job4        |
+|job_201312301708_0016_trace|job1_trace        |       
+|job_201307220134_0002_trace|job2_trace        |       
+|job_201312301708_0002_trace|job3_trace        |             
+|job_201312301708_0010_trace|job4_trace        |
 
-
-#### Trace types
-
-+ 8 Nodes = job_201312012205_0002_trace (2nd file), job_201312012250_0002_trace.json (3rd file), job_201312012307_0002_trace.json (4th file)
-
-##### Traces with errors
-
-+ job_201312301610_0002_trace.json (5th file), Mode: GFF + ECMP, Error `TypeError: 'NoneType' object is not iterable 
-ERROR:core:Exception while handling OpenFlowNexus!PacketIn...`
-+ job_201312301749_0010_trace (9th file) = no node `10.0.0.3` GFF mode - `  File "/usr/lib/python2.7/socket.py", line 224, in meth
-    return getattr(self._sock,name)(*args)
-error: [Errno 110] Connection timed out` 
-+ job_201312301808_0016_trace (10th file) = runs indefinitely

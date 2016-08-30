@@ -141,7 +141,6 @@ def kill_controller():
 def sample_bandwidth(net):
     # Sample the cumulative # of bytes received for each host, every second.
     # The diff between adjacent samples gives us throughput for that second.
-    print "Inside sample_bandwidth"
     rxbytes = {}
     sample_durations = []
     for name in HOST_NAMES:
@@ -178,7 +177,7 @@ def main():
     start = time()
     topo = FatTreeTopo(k=4, speed=1.0)  # 1.0 Gbps links
     net = Mininet(topo=topo)
-    net.addController(name='hederaController', controller=RemoteController,
+    net.addController(name='SDNController', controller=RemoteController,
                       ip='127.0.0.1', port=6633)
     net.start()
     dumpNodeConnections(net.hosts)
