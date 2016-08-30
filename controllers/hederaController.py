@@ -1,5 +1,5 @@
 """
-HederaController
+HederaController - Global First Fit Flow Scheduling
 To do: poll edge switches for flow byte counts
 When a flow exceeds threshold (>10 percent of host link capacity)
 do a demand estimation
@@ -221,6 +221,7 @@ class HederaController(object):
                 else:
                     out_port = final_out_port
                 self.switches[node_dpid].install(out_port, match, idle_timeout=IDLE_TIMEOUT)
+                # Store the flow decisions made by GFF in a json file
                 self.all_flows[self.count] = {"dpid": node_dpid, "out_port": out_port,
                                               "dl_src": str(match.dl_src),
                                               "dl_dst": str(match.dl_dst),
@@ -233,14 +234,6 @@ class HederaController(object):
                 with open('reactiveFlows.json', "a") as j:
                     j.write("{},\n".format(json.dumps(self.all_flows[self.count])))
                 self.count += 1
-    #             self._save_results()
-    #
-    # def _save_results(self):
-    #     flowFile = 'reactiveFlows.json'
-    #
-    #     with open(flowFile, 'w') as f:
-    #         json.dump(self.all_flows, f, indent=4)
-
 
     def _eth_to_int(self, eth):
         return sum(([ord(x) * 2 ** ((5 - i) * 8) for i, x in enumerate(eth.raw)]))

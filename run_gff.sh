@@ -10,5 +10,5 @@ sleep 5
 
 ~/pox/pox.py controllers.hederaController --topo=ft,4 &
 sleep 2
-sudo python hedera.py gff traffic/stride2.json
+sudo python LaunchExperiment.py
 sleep 6

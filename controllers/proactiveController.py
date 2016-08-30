@@ -1,17 +1,15 @@
 """
-HederaController
-To do: poll edge switches for flow byte counts
+ProactiveController
+
+Poll edge switches for flow byte counts
 When a flow exceeds threshold (>10 percent of host link capacity)
 do a demand estimation
 find a link which will accommodate that demand and reserve
 """
 
 
-import shelve
-import anydbm
 import json
 import logging
-import random
 from struct import pack
 from zlib import crc32
 
@@ -112,7 +110,7 @@ def sep():
     log.info("************************************************")
 
 
-class HederaController(object):
+class ProactiveController(object):
     def __init__(self, t, r):
         self.switches = {}  # Switches seen: [dpid] -> Switch
         self.t = t  # Master Topo object, passed in and never modified.
@@ -381,7 +379,7 @@ class HederaController(object):
 
 def launch(topo=None):
     """
-  Launch Hedera Controller
+  Launch Proactive Controller
 
   topo is in format toponame,arg1,arg2,...
   """
@@ -393,6 +391,6 @@ def launch(topo=None):
         t = buildTopo(topo, topos)
         r = getRouting('hashed', t)
 
-    core.registerNew(HederaController, t, r)
+    core.registerNew(ProactiveController, t, r)
 
-    log.info("Hedera running with topo=%s." % topo)
+    log.info("Proactive Controller running with topo=%s." % topo)

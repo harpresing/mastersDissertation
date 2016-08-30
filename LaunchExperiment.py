@@ -6,15 +6,8 @@
 # $ ~/pox/pox.py controllers.riplpox --topo=ft,4 --routing=hashed --mode=reactive
 #
 # Running Mininet via this script (second terminal window)
-# $ sudo python hedera.py ecmp traffic/stride1.json
-#
-# ^ The 'ecmp' parameter here does NOT actually control which scheduling is
-# used - that is determined by the POX command. It just tells this script how
-# to label the results when we persist them.
-#
-# by Anh Truong (anhlt92)
-# and Ian Walsh (iwalsh)
-# for CS 244, Spring 2015
+# $ sudo python LaunchExperiment.py
+
 
 import os
 import json
@@ -33,11 +26,7 @@ from mininet.cli import CLI
 from ripllib.dctopo import FatTreeTopo
 from applauncher import HadoopTest
 
-from argparse import ArgumentParser
 from multiprocessing import Process, Value
-
-# Number of seconds to sample the flows
-N_SAMPLES = 30
 
 # Flag to indicate if the emulation is working or not
 IS_ALIVE = Value('i', 0)
@@ -50,10 +39,6 @@ IPERF_PORT = 5001
 IPERF_PORT_BASE = 5001
 IPERF_SECONDS = 3600
 
-OUTDIR = 'results/'
-
-popens = {}
-popen_receivers = {}
 
 HOST_NAMES = ('0_0_2', '0_0_3', '0_1_2', '0_1_3',
               '1_0_2', '1_0_3', '1_1_2', '1_1_3',
@@ -61,49 +46,6 @@ HOST_NAMES = ('0_0_2', '0_0_3', '0_1_2', '0_1_3',
               '3_0_2', '3_0_3', '3_1_2', '3_1_3')
 
 lg.setLogLevel('info')
-
-parser = ArgumentParser(description='Reproducing Hedera results')
-parser.add_argument('algorithm', type=str, choices=('ecmp', 'gff'),
-                    help='Routing algorithm for saving results')
-parser.add_argument('traffic', type=str,
-                    help='Traffic JSON file created by traffic.py to use')
-args = parser.parse_args()
-
-if not os.path.isfile(args.traffic):
-    raise Exception('Traffic file "%s" does not exist!' % args.traffic)
-
-if not os.path.isdir(OUTDIR):
-    raise Exception('Output directory "%s" does not exist!' % OUTDIR)
-
-
-def start_traffic(net):
-    """
-    Start long-lived iperf flows for all the (src, dst) pairs in traffic_file.
-    """
-    with open(args.traffic, 'r') as f:
-        traffic = json.load(f)
-
-    # Start every flow on its own port
-    port_count = 0
-    for src_idx in traffic:
-        src_name = HOST_NAMES[int(src_idx)]
-        src = net.get(src_name)
-
-        for dst_idx in traffic[src_idx]:
-            dst_name = HOST_NAMES[dst_idx]
-            dst = net.get(dst_name)
-
-            port = IPERF_PORT_BASE + port_count
-            server = '%s -s -p %s &' % (IPERF_PATH, port)
-            client = '%s -c %s -p %s -t %d &' % (IPERF_PATH,
-                                                 dst.IP('%s-eth0' % dst_name),
-                                                 port, IPERF_SECONDS)
-            dst.cmd(server)
-            src.cmd(client)
-            print 'Started iperf flow %s (%s) -> %s (%s) on port %d' % \
-                  (src_name, src.IP('%s-eth0' % src_name), dst_name,
-                   dst.IP('%s-eth0' % dst_name), port)
-            port_count += 1
 
 
 def avg(lst):
@@ -180,33 +122,6 @@ def aggregate_statistics(rxbytes, sample_durations):
     return (agg_throughput, agg_variance)
 
 
-def save_results(mean_gbps, stddev_gbps):
-    """
-    Save results as json to OUTDIR/<traffic_filename>.json
-    (e.g. results/stride1.json).
-    Won't clobber existing results for other algorithms, if present.
-    """
-    filename = args.traffic.split('/')[-1]
-    outfile = OUTDIR + filename
-
-    if os.path.isfile(outfile):
-        # Append to existing json; don't clobber
-        with open(outfile, 'r') as f:
-            results = json.load(f)
-
-        os.remove(outfile)
-    else:
-        results = {}
-
-    results['%s_mean_gbps' % args.algorithm] = mean_gbps
-    results['%s_stddev_gbps' % args.algorithm] = stddev_gbps
-
-    with open(outfile, 'w') as f:
-        json.dump(results, f)
-
-    print 'Results saved to %s!' % outfile
-
-
 def kill_controller():
     ports = ['6633']
     popen = subprocess.Popen(['netstat', '-lpn'],
@@ -253,11 +168,9 @@ def sample_bandwidth(net):
     print 'Standard deviation: %f bytes/sec (%f Gbps)' % \
           (agg_stddev, stddev_gbps)
 
-    save_results(mean_gbps, stddev_gbps)
 
-
-def main(args):
-    print 'Running Hedera testbed experiments'
+def main():
+    print 'Running 16-host fat-tree Mininet topology and starting Hadoop emulation on each'
 
     # Shut down iperf processes
     os.system('killall -9 ' + IPERF_PATH)
@@ -274,25 +187,18 @@ def main(args):
 
     # CLI(net)
 
-    # print 'Generating the traffic pattern in "%s"...' % args.traffic
-    # start_traffic(net)
-    print 'Trying to get hadoop working'
     hosts = net.hosts
     emulation = Process(target=HadoopTest, args=(hosts, ))
-    emulation.start()
+    emulation.start()   # Started Hadoop emulation on one process
 
     IS_ALIVE.value = 1
 
     sample = Process(target=sample_bandwidth, args=(net,))
-    sample.start()
+    sample.start()      # Starting sampling of throughput using 2nd process
 
     emulation.join()
     IS_ALIVE.value = 0
-    print '********** Changed the value of IS_ALIVE'
     sample.join()
-
-    # Shut down iperf processes
-    # os.system('killall -9 ' + IPERF_PATH)
 
     # Kill the controller before to prevent exceptions
 
@@ -305,7 +211,7 @@ def main(args):
 
 if __name__ == '__main__':
     try:
-        main(args)
+        main()
     except:
         print '-' * 80
         print 'Caught exception.  Cleaning up...'

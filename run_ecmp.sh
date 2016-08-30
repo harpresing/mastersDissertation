@@ -9,5 +9,5 @@ sleep 5
 
 ~/pox/pox.py controllers.riplpox --topo=ft,4 --routing=hashed --mode=reactive &
 sleep 2
-sudo python hedera.py ecmp traffic/stride2.json
+sudo python LaunchExperiment.py
 sleep 6

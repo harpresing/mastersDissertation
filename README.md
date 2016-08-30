@@ -71,7 +71,7 @@ Terminal #1 - start the remote controller using ECMP flow scheduling
 
 Terminal #2 - run our measurement script on a sample traffic pattern
 
-`$ sudo python hedera.py ecmp traffic/stride2.json`
+`$ sudo python LaunchExperiment.py ecmp traffic/stride2.json`
 
 Alternate Terminal #1 - start the Hedera controller using Global First-Fit flow scheduling
 
