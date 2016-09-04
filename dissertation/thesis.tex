@@ -1,0 +1,193 @@
+\documentclass[hidelinks, a4paper, 12pt, oneside]{report}         %% LaTeX2e document.
+\usepackage {tcdthesis}              %% Preamble.
+\usepackage{graphicx,color, colortbl}
+\usepackage{anysize}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{longtable}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\mastersthesis                     %% Uncomment one of these; if you don't
+%\phdthesis                         %% use either, the default is \phdthesis.
+
+%\thesisdraft                       %% Uncomment this if you want a draft
+                                     %% version; this will print a timestamp
+                                     %% on each page of your thesis.
+
+\leftchapter                       %% Uncomment one of these if you want
+%\centerchapter                      %% left-justified, centered or
+% \rightchapter                      %% right-justified chapter headings.
+                                     %% Chapter headings includes the
+                                     %% Contents, Acknowledgments, Lists
+                                     %% of Tables and Figures and the Vita.
+                                     %% The default is \centerchapter.
+
+% \singlespace                       %% Uncomment one of these if you want
+% \oneandhalfspace                   %% single-spacing, space-and-a-half
+ \doublespace                       %% or double-spacing; the default is
+                                     %% \oneandhalfspace, which is the
+                                     %% minimum spacing accepted by the
+                                     %% Graduate School.
+
+\renewcommand{\thesisauthor}{Harpreet Singh}            %% Your official UT name.
+\renewcommand{\thesismonth}{September}                  %% Your month of graduation.
+\renewcommand{\thesisyear}{2016}                      %% Your year of graduation.
+\renewcommand{\thesistitle}{\large{} \\ \LARGE{Proactive Configuration of Data Centre Networks for Big Data Processing}}            %% The title of your thesis; use mixed-case.
+\renewcommand{\thesisauthorpreviousdegrees}{B.Sc.}  %% Your previous degrees, abbreviated; separate multiple degrees by commas.
+\renewcommand{\thesissupervisor}{Stefan Weber}      %% Your thesis supervisor; use mixed-case and don't use any titles or degrees.
+
+% \renewcommand{\thesiscosupervisor}{}                 %% Your PhD. thesis co-supervisor; if any.
+
+\renewcommand{\thesisauthoraddress}{Dublin, Ireland}
+
+%\renewcommand{\thesisdedication}{...}     %% Your dedication, if you have one; use "\\" for linebreaks.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% The following commands are all optional, but useful if your requirements
+%%% are different from the default values in utthesis.sty.  To use them,
+%%% simply uncomment (remove the leading %) the line(s).
+
+% \renewcommand{\thesiscommitteesize}{...}
+                                     %% Uncomment this only if your thesis
+                                     %% committee does NOT have 5 members
+                                     %% for \phdthesis or 2 for \mastersthesis.
+                                     %% Replace the "..." with the correct
+                                     %% number of members.
+
+\renewcommand{\thesisdegree}{Master of Science in Computer Science}  %% Uncomment this only if your thesis
+                                     %% degree is NOT "DOCTOR OF PHILOSOPHY"
+                                     %% for \phdthesis or "MASTER OF ARTS"
+                                     %% for \mastersthesis.  Provide the
+                                     %% correct FULL OFFICIAL name of
+                                     %% the degree.
+
+\renewcommand{\thesisdegreeabbreviation}{M.Sc.}
+                                     %% Use this if you also use the above
+                                     %% command; provide the OFFICIAL
+                                     %% abbreviation of your thesis degree.
+
+\renewcommand{\thesistype}{Dissertation}    %% Use this ONLY if your thesis type
+                                     %% is NOT "Dissertation" for \phdthesis
+                                     %% or "Thesis" for \mastersthesis.
+                                     %% Provide the OFFICIAL type of the
+                                     %% thesis; use mixed-case.
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%
+%%%% Commands for highlighting JSON snippet
+%%%%
+\newcommand\JSONnumbervaluestyle{\color{blue}}
+\newcommand\JSONstringvaluestyle{\color{red}}
+
+% switch used as state variable
+\newif\ifcolonfoundonthisline
+
+\makeatletter
+
+\lstdefinestyle{json}
+{
+	showstringspaces    = false,
+	keywords            = {false,true},
+	alsoletter          = 0123456789.,
+	morestring          = [s]{"}{"},
+	stringstyle         = \ifcolonfoundonthisline\JSONstringvaluestyle\fi,
+	MoreSelectCharTable =%
+	\lst@DefSaveDef{`:}\colon@json{\processColon@json},
+	basicstyle          = \linespread{0.9}\ttfamily,
+	keywordstyle        = \ttfamily\bfseries,
+}
+% flip the switch if a colon is found in Pmode
+\newcommand\processColon@json{%
+	\colon@json%
+	\ifnum\lst@mode=\lst@Pmode%
+	\global\colonfoundonthislinetrue%
+	\fi
+}
+
+\lst@AddToHook{Output}{%
+	\ifcolonfoundonthisline%
+	\ifnum\lst@mode=\lst@Pmode%
+	\def\lst@thestyle{\JSONnumbervaluestyle}%
+	\fi
+	\fi
+	%override by keyword style if a keyword is detected!
+	\lsthk@DetectKeywords% 
+}
+
+% reset the switch at the end of line
+\lst@AddToHook{EOL}%
+{\global\colonfoundonthislinefalse}
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}                                  %% BEGIN THE DOCUMENT
+
+
+\thesistitlepage                                  %% Generate the title page.
+
+\thesisdeclarationpage				  %% Generate the declaration page.
+
+\thesispermissionpage				  %% Generate the copyright permission page
+
+%\thesisdedicationpage                             %% Generate the dedication page.
+
+\begin{thesisacknowledgments}                     %% Use this to write your
+			                          %% acknowledgements; it can be anything
+Firstly, I would like to thank my supervisor Stefan Weber for making this dissertation possible with his invaluable guidance and support. I would also like to thank my family and friends, for their encouragement. And finally, I would like to thank Alexia, for her infallible moral support and encouragement.  
+
+\end{thesisacknowledgments}                       %% allowed in LaTeX2e par-mode.
+
+\begin{thesisabstract}
+
+Various studies have determined that the network is a performance \textit{bottleneck} in Big Data processing applications running in the cloud such as Hadoop. Numerous attempts have been made to alleviate this network bottleneck by traffic engineering during execution of the applications, using Software-Defined Networking. Such measures of traffic engineering are overwhelmingly \textit{reactive} in nature and are bound to induce control traffic overhead in the network. In this project, we propose a \textit{proactive} approach for configuring Data Centre Networks as the means to optimize application traffic, specifically Hadoop; thereby accelerating the execution of applications in the cloud. 
+
+    We configure the network before execution of the application, to determine if there is a performance gain when there is no control overhead in the network. The network is configured \textit{proactively}, by logging the flow decisions made by the \textit{reactive} algorithms from previous studies. These flow rules are subsequently installed in the routing devices before the execution of the application, after which, the flows are routed \textit{reactively}. We demonstrate an \textit{average gain in network bandwidth utilization} between 11.9\% to 59.9\% in comparison to \textit{reactive} approaches, while Hadoop job completion times are reduced by 10\% to 33.5\%.         
+
+\end{thesisabstract}
+
+\tableofcontents                                  %% Generate table of contents.
+\listoftables                                     %% Uncomment this to generate list of tables.
+\listoffigures                                    %% Uncomment this to generate list of figures.
+
+%%
+%% Include thesis chapters here...
+%%
+  \include{chapters/chapter1}                                
+  \include{chapters/chapter2}                                
+  \include{chapters/chapter3}
+  \include{chapters/chapter4}
+  \include{chapters/chapter5}
+  \include{chapters/chapter6}
+  \include{chapters/chapter7}
+
+
+%\addcontentsline {toc}{chapter}{Appendices}       %% Force Appendices to appear in contents
+\begin{appendix}
+\include{appendix/appendix1}
+\include{appendix/appendix2}
+\end{appendix}
+
+
+%\addcontentsline {toc}{chapter}{Bibliography}     %% Force Bibliography to appear in contents
+
+% \begin{thebibliography}{ieeetr}                   %% Start your bibliography here; you can
+% %\bibliography{refs}                               %% also use the \bibliography command
+
+% \input{biblio}
+%\end{thebibliography}                             %% to generate your bibliography.
+
+\bibliographystyle{plain}
+\bibliography{references} 
+
+
+\end{document}                                    %% END THE DOCUMENT
